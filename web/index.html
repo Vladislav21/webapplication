@@ -1,22 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
+
+
 <head>
     <meta charset="UTF-8">
     <title>My super game!</title>
+    <style>
+        div {
+            border: 1px solid black; /* Параметры рамки */
+            padding: 5px; /* Поля вокруг текста */
+            margin-bottom: 5px; /* Отступ снизу */
+        }
+
+        #left {
+            text-align: left;
+        }
+
+        #right {
+            text-align: right;
+        }
+
+        #center {
+            text-align: center;
+        }
+
+        .content {
+            width: 75%; /* Ширина слоя */
+            background: #fc0; /* Цвет фона */
+        }
+    </style>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
+
+
 <body>
 <!-- header -->
-
+<body class="w3-light-grey">
+<div id="center"><div class="w3-round-large">
+    <h2>Welcome to the bull-cow game. If you do not have an account, then register to start.</h2>
 <div>       <!-- content -->
-    <div>    <!-- buttons holder -->
-        <button onclick="location.href='/login'">Login</button>
-        <br>
-        <br>
-        <button onclick="location.href='/registration'">Authorization</button>
-        <br>
-        <br>
-        <button onclick="location.href='/list'">Result list of users</button>
-    </div>
-</div>
+    <div class="w3-container w3-center">
+        <div class="w3-bar w3-padding-large w3-padding-24">
+            <button class="w3-hover-light-blue w3-round-large" onclick="location.href='/login'">Login</button>
+            <br>
+            <br>
+            <button class="w3-hover-light-blue w3-round-large" onclick="location.href='/registration'">
+                Authorization
+            </button>
+            <br>
+            <br>
+            <button class="w3-hover-light-blue w3-round-large" onclick="location.href='/list'">Result list of
+                users
+            </button>
+        </div>
+        <div>
+                 <img src="http://womanadvice.ru/sites/default/files/21/articles_main_big/2017-10-21_1737/sonnik_korova.jpg">
+        </div>
 </body>
 </html>

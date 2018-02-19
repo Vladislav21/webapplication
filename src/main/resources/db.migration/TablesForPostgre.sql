@@ -5,9 +5,6 @@ CREATE TABLE users (
   number_average_attemps INTEGER DEFAULT 0
 );
 
-
-INSERT INTO users (loggin, password) VALUES ('Admin', 'admin'), ('Test', 'test');
-
 CREATE TABLE attempts (
   user_id       INTEGER,
   created_at    TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
@@ -15,3 +12,4 @@ CREATE TABLE attempts (
   CONSTRAINT fk_attempts_to_users FOREIGN KEY (user_id)
   REFERENCES users (id)
 );
+

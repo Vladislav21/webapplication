@@ -1,7 +1,8 @@
 package app.servlets;
 
 import app.entities.User;
-import app.model.ModelUsers;
+import app.utils.DBUtils;
+import app.utils.PostgreSQLConnUtils;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -9,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class Registration extends HttpServlet {
     @Override
@@ -22,25 +25,21 @@ public class Registration extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
-        ModelUsers list = ModelUsers.getInstance();
         String message = null;
-        int id = list.list().size();
-        boolean flag = true;
-        for (User u : list.list()) {
-            if (u.getLogin().equals(login)) {
-                flag = false;
+        try {
+            Connection con = PostgreSQLConnUtils.getPostgreSQLConnection();
+            User user = DBUtils.findUser(con, login);
+            if (user == null) {
+                DBUtils.insertUser(con, login, password);
+                message = " added!";
+                req.setAttribute("message", message);
+            } else {
+                message = " already exists, try again...";
+                req.setAttribute("message", message);
             }
-        }
-        if (flag) {
-            User user = new User(login, password);
-            id++;
-            user.setId(id);
-            list.add(user);
-            message = " added!";
-            req.setAttribute("message", message);
-        } else {
-            message = " already exists, try again...";
-            req.setAttribute("message", message);
+            con.close();
+        } catch (SQLException | ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            e.printStackTrace();
         }
         req.setAttribute("users", login);
         doGet(req, resp);

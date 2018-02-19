@@ -17,6 +17,7 @@ public class User {
     public void setId(int id) {
         this.id = id;
     }
+
     public int getId() {
         return id;
     }
@@ -49,8 +50,8 @@ public class User {
     public String toString() {
         return
                 "id=" + id +
-                ", login='" + login + '\'' +
-                ", numberAttempts=" + numberAttempts+"\n";
+                        ", login='" + login + '\'' +
+                        ", numberAttempts=" + numberAttempts + "\n";
     }
 
     @Override
