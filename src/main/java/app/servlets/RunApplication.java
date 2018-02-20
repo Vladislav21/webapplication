@@ -1,6 +1,6 @@
 package app.servlets;
 
-import app.entities.User;
+
 import app.model.*;
 import app.utils.DBUtils;
 import app.utils.PostgreSQLConnUtils;
@@ -17,8 +17,6 @@ import java.util.*;
 
 public class RunApplication extends HttpServlet {
 
-    /*private final String FILE_NAME = "dataApp.txt";*/
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         RequestDispatcher requestDispatcher = req.getRequestDispatcher("views/runApp.jsp");
@@ -28,6 +26,7 @@ public class RunApplication extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Count instance1 = Count.getInstance();
+        Lelek r = Lelek.getInstance();
         int count1 = instance1.getCount();
         count1++;
         instance1.setCount(count1);
@@ -63,20 +62,12 @@ public class RunApplication extends HttpServlet {
                     }
                 }
             }
-            req.setAttribute("Bull", countPosition);
-            req.setAttribute("Cow", countNumber - countPosition);
-            /*try {
-                ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME));
-                String finalStr = "Bull: " + countPosition + " Cow: " + (countNumber - countPosition) + " My Number: " + MyNumber;
-                oos.writeObject(finalStr);
-                oos.close();
-                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME));
-                String str = (String) ois.readObject();
-                *//*ois.close();*//*
-                req.setAttribute("result",str);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }*/
+            String resultStr = "My number: " + MyNumber+" Bull: "+countPosition+" Cow: "+(countNumber-countPosition);
+            r.getResult().add(resultStr);
+            req.setAttribute("result1", Result1.getInstance().getResult());
+          /*  req.setAttribute("Bull", countPosition);
+            req.setAttribute("Cow", countNumber - countPosition);*/
+
             if (countPosition == 4) {
                 try {
                     String congratulations = null;
@@ -94,12 +85,7 @@ public class RunApplication extends HttpServlet {
                 }
                 instance1.setCount(0);
             }
-            /*List<Integer> list = new ArrayList<>(number.length);
-            for (int value : number) {
-                list.add(value);
-            }
-            req.setAttribute("number", list);*/
-        } else {
+        } else  {
             String warning = null;
             warning = "The number must consist of different digits! Try again...";
             req.setAttribute("warning", warning);

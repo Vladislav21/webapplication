@@ -71,9 +71,12 @@
                             }
                         %>
                         <%
-                            if (request.getAttribute("Bull") != null && request.getAttribute("Cow") != null) {
-                                out.println("<p>" + "Bull: " + request.getAttribute("Bull") + " Cow: " + request.getAttribute("Cow") + " My number: " + request.getAttribute("MyNumber") + "</p>" + "<br/>");
-                                /*out.println("<p>"+request.getAttribute("result")+"</p>");*/
+                            List<String> resultList = (List<String>) request.getAttribute("result1");
+                            if (resultList !=null && !resultList.isEmpty()) {
+                                for (String s : resultList) {
+                                    out.println("<p>"+s+"</p>");
+                                }
+                                /*out.println("<p>"+request.getAttribute("result1")+"</p>");*/
                             }
            /* if (request.getAttribute("number") != null) {
                 out.println("<p>" + request.getAttribute("number") + "</p>");

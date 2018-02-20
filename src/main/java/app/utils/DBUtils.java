@@ -10,6 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBUtils {
+    /**
+     * Достать пользователя по login и password
+     *
+     * @param conn
+     * @param login
+     * @param password
+     * @return User
+     * @throws SQLException
+     */
     public static User findUser(Connection conn,
                                 String login, String password) throws SQLException {
 
