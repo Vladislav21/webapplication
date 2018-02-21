@@ -26,19 +26,27 @@ public class RunApplication extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-
             Connection con = PostgreSQLConnUtils.getPostgreSQLConnection();
-
+            /**
+             * Установка ID игры
+             */
             if (StaticCollection.getGameId() == 0) {
                 int gameId1 = DBUtils.getNewIdGame(con);
                 StaticCollection.setGameId(gameId1);
             }
 
+            /**
+             * Счетчик попыток
+             */
             Count instance1 = Count.getInstance();
             int count1 = instance1.getCount();
             count1++;
             instance1.setCount(count1);
 
+
+            /**
+             * Логика самой игры
+             */
             int[] number = NumComp.getInstance().getNumber();
             String number1 = req.getParameter("number1");
             String number2 = req.getParameter("number2");
@@ -72,6 +80,10 @@ public class RunApplication extends HttpServlet {
                     }
                 }
 
+
+                /**
+                 * Заносим результат в БД и берем оттуда список для данного ID игры
+                 */
                 String resultStr = "My number: " + MyNumber + " Bull: " + countPosition + " Cow: " + (countNumber - countPosition);
                 DBUtils.updateGame(con, StaticCollection.getGameId(), CurrentUser.getId(), resultStr);
                 List<String> data = DBUtils.getData(con, StaticCollection.getGameId(), CurrentUser.getId());
@@ -102,14 +114,4 @@ public class RunApplication extends HttpServlet {
         }
 
     }
-
-    private int getGameId(Connection con) throws SQLException {
-        if (StaticCollection.getGameId() == 0) {
-            int gameId = DBUtils.getNewIdGame(con);
-            StaticCollection.setGameId(gameId);
-        } else
-            return StaticCollection.getGameId();
-        return 0;
-    }
-
 }

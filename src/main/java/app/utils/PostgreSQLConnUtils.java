@@ -4,6 +4,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+
+/**
+ * Настройка подключения к БД
+ */
 public class PostgreSQLConnUtils {
 
     public static Connection getPostgreSQLConnection() throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
