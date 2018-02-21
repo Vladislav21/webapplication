@@ -5,11 +5,17 @@ CREATE TABLE users (
   number_average_attemps INTEGER DEFAULT 0
 );
 
-CREATE TABLE attempts (
-  user_id       INTEGER,
-  created_at    TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
-  number_attemp INTEGER,
-  CONSTRAINT fk_attempts_to_users FOREIGN KEY (user_id)
+CREATE TABLE games (
+  id       SERIAL PRIMARY KEY,
+  attempts INTEGER
+);
+
+CREATE TABLE game_logs (
+  id      SERIAL PRIMARY KEY,
+  id_user INTEGER,
+  data    CHARACTER VARYING,
+  game_id INTEGER,
+  CONSTRAINT fk_game_to_users FOREIGN KEY (id_user)
   REFERENCES users (id)
 );
 

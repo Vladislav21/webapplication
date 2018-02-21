@@ -25,72 +25,91 @@ public class RunApplication extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Count instance1 = Count.getInstance();
-        Lelek r = Lelek.getInstance();
-        int count1 = instance1.getCount();
-        count1++;
-        instance1.setCount(count1);
-        int[] number = NumComp.getInstance().getNumber();
-        String number1 = req.getParameter("number1");
-        String number2 = req.getParameter("number2");
-        String number3 = req.getParameter("number3");
-        String number4 = req.getParameter("number4");
-        String[] check = {number1, number2, number3, number4};
-        Set<String> set = new HashSet<String>(Arrays.asList(check));
-        if (check.length == set.size()) {
-            Integer num1 = Integer.valueOf(number1);
-            Integer num2 = Integer.valueOf(number2);
-            Integer num3 = Integer.valueOf(number3);
-            Integer num4 = Integer.valueOf(number4);
-            int[] userNumber = {num1, num2, num3, num4};
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < userNumber.length; i++)
-                sb.append(userNumber[i]);
-            long MyNumber = Long.parseLong(sb.toString());
-            req.setAttribute("MyNumber", MyNumber);
-            int countPosition = 0;
-            int countNumber = 0;
-            for (int i = 0; i < number.length; i++) {
-                if (number[i] == userNumber[i]) {
-                    countPosition++;
-                }
+        try {
+
+            Connection con = PostgreSQLConnUtils.getPostgreSQLConnection();
+
+            if (StaticCollection.getGameId() == 0) {
+                int gameId1 = DBUtils.getNewIdGame(con);
+                StaticCollection.setGameId(gameId1);
             }
-            for (int aNumber : number) {
+
+            Count instance1 = Count.getInstance();
+            int count1 = instance1.getCount();
+            count1++;
+            instance1.setCount(count1);
+
+            int[] number = NumComp.getInstance().getNumber();
+            String number1 = req.getParameter("number1");
+            String number2 = req.getParameter("number2");
+            String number3 = req.getParameter("number3");
+            String number4 = req.getParameter("number4");
+            String[] check = {number1, number2, number3, number4};
+            Set<String> set = new HashSet<String>(Arrays.asList(check));
+            if (check.length == set.size()) {
+                Integer num1 = Integer.valueOf(number1);
+                Integer num2 = Integer.valueOf(number2);
+                Integer num3 = Integer.valueOf(number3);
+                Integer num4 = Integer.valueOf(number4);
+                int[] userNumber = {num1, num2, num3, num4};
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < userNumber.length; i++)
+                    sb.append(userNumber[i]);
+                long MyNumber = Long.parseLong(sb.toString());
+                req.setAttribute("MyNumber", MyNumber);
+                int countPosition = 0;
+                int countNumber = 0;
                 for (int i = 0; i < number.length; i++) {
-                    if (aNumber == userNumber[i]) {
-                        countNumber++;
+                    if (number[i] == userNumber[i]) {
+                        countPosition++;
                     }
                 }
-            }
-            String resultStr = "My number: " + MyNumber+" Bull: "+countPosition+" Cow: "+(countNumber-countPosition);
-            r.getResult().add(resultStr);
-            req.setAttribute("result1", Result1.getInstance().getResult());
-          /*  req.setAttribute("Bull", countPosition);
-            req.setAttribute("Cow", countNumber - countPosition);*/
+                for (int aNumber : number) {
+                    for (int i = 0; i < number.length; i++) {
+                        if (aNumber == userNumber[i]) {
+                            countNumber++;
+                        }
+                    }
+                }
 
-            if (countPosition == 4) {
-                try {
+                String resultStr = "My number: " + MyNumber + " Bull: " + countPosition + " Cow: " + (countNumber - countPosition);
+                DBUtils.updateGame(con, StaticCollection.getGameId(), CurrentUser.getId(), resultStr);
+                List<String> data = DBUtils.getData(con, StaticCollection.getGameId(), CurrentUser.getId());
+                req.setAttribute("result", data);
+
+                if (countPosition == 4) {
                     String congratulations = null;
                     number = new NumComp().getNumber();
-                    Connection con = PostgreSQLConnUtils.getPostgreSQLConnection();
-                    int id = CurrentUser.getId();
-                    DBUtils.putAttempts(con, id, count1);
-                    int aver = DBUtils.countAverage(con, id);
-                    DBUtils.setAverage(con, id, aver);
+                    NumComp.getInstance().setNumber(number);
+                    int idUser = CurrentUser.getId();
+                    DBUtils.putAttempts(con, StaticCollection.getGameId(), count1);
+                    StaticCollection.setGameId(0);
+                    int aver = DBUtils.countAverage(con, idUser, StaticCollection.getGameId());
+                    DBUtils.setAverage(con, idUser, aver);
                     congratulations = "My congratulations!!!You win!!!";
                     req.setAttribute("congratulations", congratulations);
                     con.close();
-                } catch (SQLException | ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-                    e.printStackTrace();
+                    instance1.setCount(0);
                 }
-                instance1.setCount(0);
+            } else {
+                String warning = null;
+                warning = "The number must consist of different digits! Try again...";
+                req.setAttribute("warning", warning);
             }
-        } else  {
-            String warning = null;
-            warning = "The number must consist of different digits! Try again...";
-            req.setAttribute("warning", warning);
+            doGet(req, resp);
+        } catch (SQLException | ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            e.printStackTrace();
         }
-        doGet(req, resp);
 
     }
+
+    private int getGameId(Connection con) throws SQLException {
+        if (StaticCollection.getGameId() == 0) {
+            int gameId = DBUtils.getNewIdGame(con);
+            StaticCollection.setGameId(gameId);
+        } else
+            return StaticCollection.getGameId();
+        return 0;
+    }
+
 }

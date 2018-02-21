@@ -71,7 +71,7 @@
                             }
                         %>
                         <%
-                            List<String> resultList = (List<String>) request.getAttribute("result1");
+                            List<String> resultList = (List<String>) request.getAttribute("result");
                             if (resultList !=null && !resultList.isEmpty()) {
                                 for (String s : resultList) {
                                     out.println("<p>"+s+"</p>");
